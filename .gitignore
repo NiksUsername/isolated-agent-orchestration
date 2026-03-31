@@ -27,5 +27,5 @@ vendor/
 
 
 # Binaries
-images/vmlinux*
-images/*.tar
+files/vmlinux*
+files/*.tar

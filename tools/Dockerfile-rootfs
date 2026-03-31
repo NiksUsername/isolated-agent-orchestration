@@ -25,7 +25,7 @@ Name=eth0
 DHCP=yes
 EOF
 
-COPY images/vm-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY files/vm-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 COPY <<EOF /etc/systemd/system/vm-init.service
