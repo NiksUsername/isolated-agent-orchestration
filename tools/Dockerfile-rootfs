@@ -1,0 +1,48 @@
+FROM ubuntu:24.04
+
+# Set non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    systemd \
+    iproute2 \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Firecracker uses ttyS0 for the console. We need to tell systemd to listen there.
+RUN ln -s /lib/systemd/system/getty@.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
+
+RUN mkdir -p /etc/systemd/network
+COPY <<EOF /etc/systemd/network/80-container-eth0.network
+[Match]
+Name=eth0
+
+[Network]
+DHCP=yes
+EOF
+
+COPY images/vm-entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+COPY <<EOF /etc/systemd/system/vm-init.service
+[Unit]
+Description=Firecracker VM Initialization
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/entrypoint.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+RUN systemctl enable vm-init.service systemd-networkd
+
+CMD ["/lib/systemd/systemd"]

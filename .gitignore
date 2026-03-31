@@ -24,3 +24,8 @@ vendor/
 
 # Secrets
 **/.env
+
+
+# Binaries
+images/vmlinux*
+images/*.tar
