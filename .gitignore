@@ -1,0 +1,26 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+
+# Go workspace
+go.work
+go.work.sum
+
+# Dependency directory
+vendor/
+
+# JetBrains / GoLand
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Secrets
+**/.env
